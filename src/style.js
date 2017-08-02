@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import render from './render'
 
-let components = []
+global.components = []
 
 export default class extends Component {
   componentWillMount() {
@@ -29,7 +29,7 @@ export default class extends Component {
 
 function stylesMap(updated) {
   const ret = new Map()
-  for (const c of components) {
+  for (const c of global.components) {
     if (updated && c === updated.instance) {
       // On `componentWillUpdate`
       // we use `styleId` and `css` from updated component rather than reading `props`
@@ -44,22 +44,22 @@ function stylesMap(updated) {
 
 export function flush() {
   const ret = stylesMap()
-  components = []
+  global.components = []
   return ret
 }
 
 function mount(component) {
-  components.push(component)
+  global.components.push(component)
   update()
 }
 
 function unmount(component) {
-  const i = components.indexOf(component)
+  const i = global.components.indexOf(component)
   if (i < 0) {
     return
   }
 
-  components.splice(i, 1)
+  global.components.splice(i, 1)
   update()
 }
 
